@@ -98,28 +98,14 @@ Shader::~Shader()
 
 void Shader::initialize()
 {
-    mShader.load("FFLShader", rio::Shader::MODE_UNIFORM_REGISTER);
+    mShader.load("ffl_shader", rio::Shader::MODE_UNIFORM_REGISTER);
 
-    mVertexUniformLocation[VERTEX_UNIFORM_IT]   = mShader.getVertexUniformLocation("u_it");
-    mVertexUniformLocation[VERTEX_UNIFORM_MV]   = mShader.getVertexUniformLocation("u_mv");
-    mVertexUniformLocation[VERTEX_UNIFORM_PROJ] = mShader.getVertexUniformLocation("u_proj");
+    mVertexUniformLocation[VERTEX_UNIFORM_MVP] = mShader.getVertexUniformLocation("u_mvp");
 
-    mPixelUniformLocation[PIXEL_UNIFORM_CONST1]                     = mShader.getFragmentUniformLocation("u_const1");
-    mPixelUniformLocation[PIXEL_UNIFORM_CONST2]                     = mShader.getFragmentUniformLocation("u_const2");
-    mPixelUniformLocation[PIXEL_UNIFORM_CONST3]                     = mShader.getFragmentUniformLocation("u_const3");
-    mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_AMBIENT]              = mShader.getFragmentUniformLocation("u_light_ambient");
-    mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_DIFFUSE]              = mShader.getFragmentUniformLocation("u_light_diffuse");
-    mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_DIR]                  = mShader.getFragmentUniformLocation("u_light_dir");
-    mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_ENABLE]               = mShader.getFragmentUniformLocation("u_light_enable");
-    mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_SPECULAR]             = mShader.getFragmentUniformLocation("u_light_specular");
-    mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_AMBIENT]           = mShader.getFragmentUniformLocation("u_material_ambient");
-    mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_DIFFUSE]           = mShader.getFragmentUniformLocation("u_material_diffuse");
-    mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_SPECULAR]          = mShader.getFragmentUniformLocation("u_material_specular");
-    mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_SPECULAR_MODE]     = mShader.getFragmentUniformLocation("u_material_specular_mode");
-    mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_SPECULAR_POWER]    = mShader.getFragmentUniformLocation("u_material_specular_power");
-    mPixelUniformLocation[PIXEL_UNIFORM_MODE]                       = mShader.getFragmentUniformLocation("u_mode");
-    mPixelUniformLocation[PIXEL_UNIFORM_RIM_COLOR]                  = mShader.getFragmentUniformLocation("u_rim_color");
-    mPixelUniformLocation[PIXEL_UNIFORM_RIM_POWER]                  = mShader.getFragmentUniformLocation("u_rim_power");
+    mPixelUniformLocation[PIXEL_UNIFORM_CONST1] = mShader.getFragmentUniformLocation("u_const1");
+    mPixelUniformLocation[PIXEL_UNIFORM_CONST2] = mShader.getFragmentUniformLocation("u_const2");
+    mPixelUniformLocation[PIXEL_UNIFORM_CONST3] = mShader.getFragmentUniformLocation("u_const3");
+    mPixelUniformLocation[PIXEL_UNIFORM_MODE]   = mShader.getFragmentUniformLocation("u_mode");
 
     mSamplerLocation = mShader.getFragmentSamplerLocation("s_texture");
 
@@ -195,53 +181,15 @@ void Shader::bind() const
     for (u32 i = 0; i < FFL_ATTRIBUTE_BUFFER_TYPE_MAX; i++)
         RIO_GL_CALL(glDisableVertexAttribArray(i));
 #endif
-    mShader.setUniform(1.0f, 1.0f, 1.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_AMBIENT]);
-    mShader.setUniform(1.0f, 1.0f, 1.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_DIFFUSE]);
-    mShader.setUniform(0.0f, 0.0f, 1.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_DIR]);
-    mShader.setUniform(true, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_ENABLE]);
-    mShader.setUniform(1.0f, 1.0f, 1.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_SPECULAR]);
-
-    mShader.setUniform(0.2f, 0.2f, 0.2f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_AMBIENT]);
-    mShader.setUniform(0.8f, 0.8f, 0.8f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_DIFFUSE]);
-    mShader.setUniform(0.0f, 0.0f, 0.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_SPECULAR]);
-    mShader.setUniform(s32(0), u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_SPECULAR_MODE]);
-    mShader.setUniform(/* 0.0f */ 10.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_MATERIAL_SPECULAR_POWER]);
-
-    mShader.setUniform(0.0f, 0.0f, 0.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_RIM_COLOR]);
-  //mShader.setUniform(10.0f, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_RIM_POWER]);
 }
 
 void Shader::setViewUniform(const rio::BaseMtx34f& model_mtx, const rio::BaseMtx34f& view_mtx, const rio::BaseMtx44f& proj_mtx) const
 {
     rio::Matrix34f mv;
     mv.setMul(static_cast<const rio::Matrix34f&>(view_mtx), static_cast<const rio::Matrix34f&>(model_mtx));
-    rio::Matrix44f mv44;
-    mv44.fromMatrix34(mv);
-    mShader.setUniform(mv44, mVertexUniformLocation[VERTEX_UNIFORM_MV], u32(-1));
-
-    mShader.setUniform(proj_mtx, mVertexUniformLocation[VERTEX_UNIFORM_PROJ], u32(-1));
-
-    rio::Matrix44f it44;
-    if (it44.setInverse(mv44))
-    {
-        const rio::BaseMtx33f it33 {
-            it44.m[0][0], it44.m[0][1], it44.m[0][2],
-            it44.m[1][0], it44.m[1][1], it44.m[1][2],
-            it44.m[2][0], it44.m[2][1], it44.m[2][2]
-        };
-
-        mShader.setUniformColumnMajor(it33, mVertexUniformLocation[VERTEX_UNIFORM_IT], u32(-1));
-    }
-    else
-    {
-        static const rio::BaseMtx33f ident33 {
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f
-        };
-
-        mShader.setUniformColumnMajor(ident33, mVertexUniformLocation[VERTEX_UNIFORM_IT], u32(-1));
-    }
+    rio::Matrix44f mvp;
+    mvp.setMul(static_cast<const rio::Matrix44f&>(proj_mtx), mv);
+    mShader.setUniform(mvp, mVertexUniformLocation[VERTEX_UNIFORM_MVP], u32(-1));
 }
 
 void Shader::applyAlphaTest(bool enable, rio::Graphics::CompareFunc func, f32 ref) const
@@ -544,17 +492,7 @@ void Shader::drawCallback_(void* p_obj, const FFLDrawParam& draw_param)
 
 void Shader::setMatrix_(const rio::BaseMtx44f& matrix)
 {
-    mShader.setUniformColumnMajor(rio::Matrix44f::ident, mVertexUniformLocation[VERTEX_UNIFORM_MV], u32(-1));
-
-    static const rio::BaseMtx33f ident33 {
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f
-    };
-
-    mShader.setUniformColumnMajor(ident33, mVertexUniformLocation[VERTEX_UNIFORM_IT], u32(-1));
-
-    mShader.setUniform(matrix, mVertexUniformLocation[VERTEX_UNIFORM_PROJ], u32(-1));
+    mShader.setUniform(matrix, mVertexUniformLocation[VERTEX_UNIFORM_MVP], u32(-1));
 }
 
 void Shader::setMatrixCallback_(void* p_obj, const rio::BaseMtx44f& matrix)

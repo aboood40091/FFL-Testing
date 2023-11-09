@@ -33,7 +33,6 @@ public:
 
     void applyAlphaTest(bool enable, rio::Graphics::CompareFunc func, f32 ref) const;
 
-    // Address: 0x024EA654
     static void setCulling(FFLCullMode mode);
 
 private:
@@ -48,9 +47,7 @@ private:
 private:
     enum VertexUniform
     {
-        VERTEX_UNIFORM_IT = 0,  // Inverse transpose of MV
-        VERTEX_UNIFORM_MV,
-        VERTEX_UNIFORM_PROJ,
+        VERTEX_UNIFORM_MVP = 0,
         VERTEX_UNIFORM_MAX
     };
 
@@ -59,19 +56,7 @@ private:
         PIXEL_UNIFORM_CONST1 = 0,
         PIXEL_UNIFORM_CONST2,
         PIXEL_UNIFORM_CONST3,
-        PIXEL_UNIFORM_LIGHT_AMBIENT,
-        PIXEL_UNIFORM_LIGHT_DIFFUSE,
-        PIXEL_UNIFORM_LIGHT_DIR,
-        PIXEL_UNIFORM_LIGHT_ENABLE,
-        PIXEL_UNIFORM_LIGHT_SPECULAR,
-        PIXEL_UNIFORM_MATERIAL_AMBIENT,
-        PIXEL_UNIFORM_MATERIAL_DIFFUSE,
-        PIXEL_UNIFORM_MATERIAL_SPECULAR,
-        PIXEL_UNIFORM_MATERIAL_SPECULAR_MODE,
-        PIXEL_UNIFORM_MATERIAL_SPECULAR_POWER,
         PIXEL_UNIFORM_MODE,
-        PIXEL_UNIFORM_RIM_COLOR,
-        PIXEL_UNIFORM_RIM_POWER,
         PIXEL_UNIFORM_MAX
     };
 

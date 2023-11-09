@@ -7,13 +7,6 @@
 
 #include <string>
 
-//#define DECOMPILE_SHADER
-
-#if RIO_IS_WIN && defined(DECOMPILE_SHADER)
-#include <ShaderUtil.h>
-#include <ninTexUtils/gfd/gfdStruct.h>
-#endif // RIO_IS_WIN
-
 RootTask::RootTask()
     : ITask("RootTask")
     , mInitialized(false)
@@ -23,125 +16,6 @@ RootTask::RootTask()
 void RootTask::prepare_()
 {
     mInitialized = false;
-
-#if RIO_IS_WIN && defined(DECOMPILE_SHADER)
-    ShaderUtil::sTempPath                   = rio::FileDeviceMgr::instance()->getNativeFileDevice()->getCWD() + "/fs/content/shaders/cache";
-    ShaderUtil::sGx2ShaderDecompilerPath    = rio::FileDeviceMgr::instance()->getNativeFileDevice()->getCWD() + "/fs/content/gx2shader-decompiler.exe";
-    ShaderUtil::sSpirvCrossPath             = rio::FileDeviceMgr::instance()->getNativeFileDevice()->getCWD() + "/fs/content/spirv-cross.exe";
-
-    GFDFile gfd;
-    {
-        rio::FileDevice::LoadArg arg;
-        arg.path = "shaders/FFLShader.gsh";
-        u8* bruh = rio::FileDeviceMgr::instance()->load(arg);
-
-        [[maybe_unused]] size_t size = gfd.load(bruh);
-        RIO_ASSERT(size == arg.read_size);
-
-        rio::FileDeviceMgr::unload(bruh);
-    }
-
-    RIO_LOG("Vertex shader:\n");
-    {
-        const GX2VertexShader& shader = gfd.mVertexShaders[0];
-        RIO_LOG("  - Shader Mode: %d\n", s32(shader.shaderMode));
-        if (shader.numUniformBlocks)
-        {
-            RIO_LOG("  - Uniform blocks:\n");
-            for (u32 i = 0; i < shader.numUniformBlocks; i++)
-            {
-                const GX2UniformBlock& ub = shader.uniformBlocks[i];
-                RIO_LOG("    - Name: %s\n", ub.name);
-                RIO_LOG("      Location: %u\n", ub.location);
-                RIO_LOG("      Size: %u\n", ub.size);
-            }
-        }
-        if (shader.numUniforms)
-        {
-            RIO_LOG("  - Uniforms:\n");
-            for (u32 i = 0; i < shader.numUniforms; i++)
-            {
-                const GX2UniformVar& ur = shader.uniformVars[i];
-                RIO_LOG("    - Name: %s\n", ur.name);
-                RIO_LOG("      Uniform Type: %d\n", s32(ur.type));
-                RIO_LOG("      Array count: %u\n", ur.arrayCount);
-                RIO_LOG("      Offset: %u\n", ur.offset);
-                RIO_LOG("      Block index: %d\n", s32(ur.blockIndex));
-            }
-        }
-        if (shader.numSamplers)
-        {
-            RIO_LOG("  - Samplers:\n");
-            for (u32 i = 0; i < shader.numSamplers; i++)
-            {
-                const GX2SamplerVar& sampler = shader.samplerVars[i];
-                RIO_LOG("    - Name: %s\n", sampler.name);
-                RIO_LOG("      Sampler Type: %d\n", s32(sampler.type));
-                RIO_LOG("      Location: %u\n", sampler.location);
-            }
-        }
-        if (shader.numAttribs)
-        {
-            RIO_LOG("  - Attributes:\n");
-            for (u32 i = 0; i < shader.numAttribs; i++)
-            {
-                const GX2AttribVar& attrib = shader.attribVars[i];
-                RIO_LOG("    - Name: %s\n", attrib.name);
-                RIO_LOG("      Attrib Type: %d\n", s32(attrib.type));
-                RIO_LOG("      Array count: %u\n", attrib.arrayCount);
-                RIO_LOG("      Location: %u\n", attrib.location);
-            }
-        }
-    }
-
-    RIO_LOG("Pixel shader:\n");
-    {
-        const GX2PixelShader& shader = gfd.mPixelShaders[0];
-        RIO_LOG("  - Shader Mode: %d\n", s32(shader.shaderMode));
-        if (shader.numUniformBlocks)
-        {
-            RIO_LOG("  - Uniform blocks:\n");
-            for (u32 i = 0; i < shader.numUniformBlocks; i++)
-            {
-                const GX2UniformBlock& ub = shader.uniformBlocks[i];
-                RIO_LOG("    - Name: %s\n", ub.name);
-                RIO_LOG("      Location: %u\n", ub.location);
-                RIO_LOG("      Size: %u\n", ub.size);
-            }
-        }
-        if (shader.numUniforms)
-        {
-            RIO_LOG("  - Uniforms:\n");
-            for (u32 i = 0; i < shader.numUniforms; i++)
-            {
-                const GX2UniformVar& ur = shader.uniformVars[i];
-                RIO_LOG("    - Name: %s\n", ur.name);
-                RIO_LOG("      Uniform Type: %d\n", s32(ur.type));
-                RIO_LOG("      Array count: %u\n", ur.arrayCount);
-                RIO_LOG("      Offset: %u\n", ur.offset);
-                RIO_LOG("      Block index: %d\n", s32(ur.blockIndex));
-            }
-        }
-        if (shader.numSamplers)
-        {
-            RIO_LOG("  - Samplers:\n");
-            for (u32 i = 0; i < shader.numSamplers; i++)
-            {
-                const GX2SamplerVar& sampler = shader.samplerVars[i];
-                RIO_LOG("    - Name: %s\n", sampler.name);
-                RIO_LOG("      Sampler Type: %d\n", s32(sampler.type));
-                RIO_LOG("      Location: %u\n", sampler.location);
-            }
-        }
-    }
-
-    {
-        [[maybe_unused]] bool success = ShaderUtil::decompileGsh(gfd.mVertexShaders[0], gfd.mPixelShaders[0], "shaders/FFLShader.vert", "shaders/FFLShader.frag");
-        RIO_ASSERT(success);
-    }
-
-    RIO_LOG("RootTask::prepare_(): FFLShader decompiled\n");
-#endif // RIO_IS_WIN
 
     FFLInitDesc init_desc;
     init_desc.fontRegion = FFL_FONT_REGION_0;
@@ -235,7 +109,7 @@ void RootTask::prepare_()
 
     Model::InitArgStoreData arg = {
         .desc = {
-            .resolution = FFLResolution(/* 128 | FFL_RESOLUTION_MIP_MAP_ENABLE_MASK */ 2048),
+            .resolution = FFLResolution(128 | FFL_RESOLUTION_MIP_MAP_ENABLE_MASK),
             .expressionFlag = 8,
             .modelFlag = 1 << 0 | 1 << 1 | 1 << 2,
             .resourceType = FFL_RESOURCE_TYPE_MIDDLE,

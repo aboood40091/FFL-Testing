@@ -16,12 +16,10 @@ private:
     void exit_() override;
 
 private:
-    bool        mInitialized;
-    Shader      mShader;
-
+    bool                mInitialized;
+    Shader              mShader;
     rio::BaseMtx44f     mProjMtx;
     rio::LookAtCamera   mCamera;
     f32                 mCounter;
-
-    Model*  mpModel;
+    Model*              mpModel;
 };
