@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<app type="complex" access="777">
+  <version type="unsignedInt" length="4">14</version>
+  <os_version type="hexBinary" length="8">000500101000400A</os_version>
+  <title_id type="hexBinary" length="8">0005000010101D00</title_id>
+  <title_version type="hexBinary" length="2">0040</title_version>
+  <sdk_version type="unsignedInt" length="4">20806</sdk_version>
+  <app_type type="hexBinary" length="4">0800001B</app_type>
+  <group_id type="hexBinary" length="4">0000101D</group_id>
+</app>
