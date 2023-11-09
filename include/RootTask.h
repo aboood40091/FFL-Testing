@@ -15,11 +15,14 @@ private:
     void calc_() override;
     void exit_() override;
 
+    void createModel_();
+
 private:
     bool                mInitialized;
     Shader              mShader;
     rio::BaseMtx44f     mProjMtx;
     rio::LookAtCamera   mCamera;
     f32                 mCounter;
+    s32                 mMiiCounter;
     Model*              mpModel;
 };

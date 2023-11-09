@@ -102,14 +102,24 @@ void RootTask::prepare_()
         mProjMtx = proj.getMatrix();
     }
 
+    mMiiCounter = 0;
+    createModel_();
+
+    mInitialized = true;
+}
+
+void RootTask::createModel_()
+{
     FFLStoreData store_data;
 
-    result = FFLiGetStoreData(&store_data, FFL_DATA_SOURCE_DEFAULT, 0);
+    [[maybe_unused]] FFLResult result = FFLiGetStoreData(&store_data, FFL_DATA_SOURCE_DEFAULT, mMiiCounter);
     RIO_ASSERT(result == FFL_RESULT_OK);
+
+    mMiiCounter = (mMiiCounter + 1) % 6;
 
     Model::InitArgStoreData arg = {
         .desc = {
-            .resolution = FFLResolution(128 | FFL_RESOLUTION_MIP_MAP_ENABLE_MASK),
+            .resolution = FFLResolution(512 | FFL_RESOLUTION_MIP_MAP_ENABLE_MASK),
             .expressionFlag = 8,
             .modelFlag = 1 << 0 | 1 << 1 | 1 << 2,
             .resourceType = FFL_RESOURCE_TYPE_MIDDLE,
@@ -122,8 +132,6 @@ void RootTask::prepare_()
     mpModel->setScale({ 1 / 16.f, 1 / 16.f, 1 / 16.f });
 
     mCounter = 0.0f;
-
-    mInitialized = true;
 }
 
 void RootTask::calc_()
@@ -133,6 +141,12 @@ void RootTask::calc_()
 
     rio::Window::instance()->clearColor(0.2f, 0.3f, 0.3f, 1.0f);
     rio::Window::instance()->clearDepthStencil();
+
+    if (mCounter >= rio::Mathf::pi2())
+    {
+        delete mpModel;
+        createModel_();
+    }
 
     static const rio::Vector3f CENTER_POS = { 0.0f, 2.0f, -0.25f };
 
