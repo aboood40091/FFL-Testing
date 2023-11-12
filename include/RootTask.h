@@ -19,6 +19,7 @@ private:
 
 private:
     bool                mInitialized;
+    FFLResourceDesc     mResourceDesc;
     Shader              mShader;
     rio::BaseMtx44f     mProjMtx;
     rio::LookAtCamera   mCamera;

@@ -8,7 +8,7 @@
 #include <string>
 
 RootTask::RootTask()
-    : ITask("RootTask")
+    : ITask("FFL Testing")
     , mInitialized(false)
 {
 }
@@ -22,8 +22,10 @@ void RootTask::prepare_()
     init_desc._c = false;
     init_desc._10 = true;
 
-    FFLResourceDesc res_desc;
-    rio::MemUtil::set(&res_desc, 0, sizeof(FFLResourceDesc));
+#if RIO_IS_CAFE
+    FSInit();
+#endif // RIO_IS_CAFE
+
     {
         std::string resPath;
         resPath.resize(256);
@@ -43,8 +45,8 @@ void RootTask::prepare_()
                     return;
                 }
 
-                res_desc.pData[FFL_RESOURCE_TYPE_MIDDLE] = buffer;
-                res_desc.size[FFL_RESOURCE_TYPE_MIDDLE] = arg.read_size;
+                mResourceDesc.pData[FFL_RESOURCE_TYPE_MIDDLE] = buffer;
+                mResourceDesc.size[FFL_RESOURCE_TYPE_MIDDLE] = arg.read_size;
             }
         }
         // High
@@ -63,13 +65,13 @@ void RootTask::prepare_()
                     return;
                 }
 
-                res_desc.pData[FFL_RESOURCE_TYPE_HIGH] = buffer;
-                res_desc.size[FFL_RESOURCE_TYPE_HIGH] = arg.read_size;
+                mResourceDesc.pData[FFL_RESOURCE_TYPE_HIGH] = buffer;
+                mResourceDesc.size[FFL_RESOURCE_TYPE_HIGH] = arg.read_size;
             }
         }
     }
 
-    FFLResult result = FFLInitResEx(&init_desc, &res_desc);
+    FFLResult result = FFLInitResEx(&init_desc, &mResourceDesc);
     if (result != FFL_RESULT_OK)
     {
         RIO_LOG("FFLInitResEx() failed with result: %d\n", (s32)result);
@@ -84,6 +86,9 @@ void RootTask::prepare_()
     FFLInitResGPUStep();
 
     mShader.initialize();
+
+    mMiiCounter = 0;
+    createModel_();
 
     // Set projection matrix
     {
@@ -102,9 +107,6 @@ void RootTask::prepare_()
         mProjMtx = proj.getMatrix();
     }
 
-    mMiiCounter = 0;
-    createModel_();
-
     mInitialized = true;
 }
 
@@ -119,7 +121,7 @@ void RootTask::createModel_()
 
     Model::InitArgStoreData arg = {
         .desc = {
-            .resolution = FFLResolution(512 | FFL_RESOLUTION_MIP_MAP_ENABLE_MASK),
+            .resolution = FFLResolution(2048),
             .expressionFlag = 8,
             .modelFlag = 1 << 0 | 1 << 1 | 1 << 2,
             .resourceType = FFL_RESOURCE_TYPE_MIDDLE,
@@ -179,6 +181,9 @@ void RootTask::exit_()
     mpModel = nullptr;
 
     FFLExit();
+
+    rio::MemUtil::free(mResourceDesc.pData[FFL_RESOURCE_TYPE_HIGH]);
+    rio::MemUtil::free(mResourceDesc.pData[FFL_RESOURCE_TYPE_MIDDLE]);
 
     mInitialized = false;
 }
