@@ -1,8 +1,9 @@
 #include <Model.h>
 #include <Shader.h>
 
-#include <math/rio_Matrix.h>
+#include <gfx/rio_Window.h>
 #include <gpu/rio_RenderState.h>
+#include <math/rio_Matrix.h>
 
 Model::Model()
     : mCharModelDesc()
@@ -170,6 +171,7 @@ void Model::initializeGpu_(const Shader& shader)
     mpShader = &shader;
     mpShader->bind();
     FFLInitCharModelGPUStep(&mCharModel);
+    rio::Window::instance()->makeContextCurrent();
 }
 
 bool Model::setCharModelSource_(const FFLStoreData* p_store_data, u16)
