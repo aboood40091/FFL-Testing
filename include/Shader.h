@@ -17,7 +17,7 @@ public:
 
     void initialize();
 
-    void bind() const;
+    void bind(bool light_enable) const;
 
     void setViewUniform(const rio::BaseMtx34f& model_mtx, const rio::BaseMtx34f& view_mtx, const rio::BaseMtx44f& proj_mtx) const;
 

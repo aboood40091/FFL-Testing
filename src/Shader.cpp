@@ -206,7 +206,6 @@ const FFLColor cLightAmbient  = { 0.73f, 0.73f, 0.73f, 1.0f };
 const FFLColor cLightDiffuse  = { 0.60f, 0.60f, 0.60f, 1.0f };
 const FFLColor cLightSpecular = { 0.70f, 0.70f, 0.70f, 1.0f };
 
-const bool cLightEnable = true;
 const rio::BaseVec3f cLightDir = { -0.4531539381f, 0.4226179123f, 0.7848858833f };
 
 const FFLColor cRimColor = { 0.3f, 0.3f, 0.3f, 1.0f };
@@ -337,7 +336,7 @@ void Shader::initialize()
     FFLSetShaderCallback(&mCallback);
 }
 
-void Shader::bind() const
+void Shader::bind(bool light_enable) const
 {
     mShader.bind();
 #if RIO_IS_CAFE
@@ -349,7 +348,7 @@ void Shader::bind() const
 #endif
 
     mShader.setUniform(cLightDir, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_DIR]);
-    mShader.setUniform(cLightEnable, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_ENABLE]);
+    mShader.setUniform(light_enable, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_ENABLE]);
     mShader.setUniform(getColorUniform(cLightAmbient), u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_AMBIENT]);
     mShader.setUniform(getColorUniform(cLightDiffuse), u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_DIFFUSE]);
     mShader.setUniform(getColorUniform(cLightSpecular), u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_SPECULAR]);
