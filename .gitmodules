@@ -1,0 +1,20 @@
+[submodule "lib/glew"]
+	path = lib/glew
+	url = https://github.com/Perlmint/glew-cmake.git
+[submodule "lib/glfw"]
+	path = lib/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "lib/rio"]
+	path = lib/rio
+	url = https://github.com/aboood40091/rio.git
+[submodule "lib/ninTexUtils"]
+	path = lib/ninTexUtils
+	url = https://github.com/aboood40091/ninTexUtils.git
+	branch = cpp
+[submodule "lib/CafeSDKWrappers"]
+	path = lib/CafeSDKWrappers
+	url = https://github.com/nw4f/CafeSDKWrappers.git
+[submodule "lib/ffl-win"]
+	path = lib/ffl-win
+	url = https://github.com/aboood40091/ffl.git
+	branch = nsmbu-win-port
