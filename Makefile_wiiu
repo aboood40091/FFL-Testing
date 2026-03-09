@@ -31,32 +31,32 @@ include $(DEVKITPRO)/wut/share/wut_rules
 # DRC_SPLASH is the image displayed during bootup on the DRC, leave blank to use default rule
 #-------------------------------------------------------------------------------
 TARGET		:=	ffl_testing_2_debug
-BUILD		:=	build
-SOURCES		:=	../../rio/src \
-				../../rio/src/audio \
-				../../rio/src/container \
-				../../rio/src/controller \
-				../../rio/src/controller/cafe \
-				../../rio/src/filedevice \
-				../../rio/src/filedevice/cafe \
-				../../rio/src/gfx \
-				../../rio/src/gfx/cafe \
-				../../rio/src/gfx/lyr \
-				../../rio/src/gfx/mdl \
-				../../rio/src/gfx/mdl/res \
-				../../rio/src/gpu \
-				../../rio/src/gpu/cafe \
-				../../rio/src/math \
-				../../rio/src/math/impl \
-				../../rio/src/task \
+BUILD		:=	build_wiiu
+SOURCES		:=	lib/rio/src \
+				lib/rio/src/audio \
+				lib/rio/src/container \
+				lib/rio/src/controller \
+				lib/rio/src/controller/cafe \
+				lib/rio/src/filedevice \
+				lib/rio/src/filedevice/cafe \
+				lib/rio/src/gfx \
+				lib/rio/src/gfx/cafe \
+				lib/rio/src/gfx/lyr \
+				lib/rio/src/gfx/mdl \
+				lib/rio/src/gfx/mdl/res \
+				lib/rio/src/gpu \
+				lib/rio/src/gpu/cafe \
+				lib/rio/src/math \
+				lib/rio/src/math/impl \
+				lib/rio/src/task \
 				src \
-				../../NSMBU_Projects/ffl-Win-Port/src \
-				../../NSMBU_Projects/ffl-Win-Port/src/detail
+				lib/ffl-win/src \
+				lib/ffl-win/src/detail
 DATA		:=	data
-INCLUDES	:=	../../rio/include \
+INCLUDES	:=	lib/rio/include \
 				include \
-				../../NSMBU_Projects/ffl-Win-Port/include
-CONTENT		:=	fs/content
+				lib/ffl-win/include
+CONTENT		:=	bin/fs/content
 ICON		:=
 TV_SPLASH	:=
 DRC_SPLASH	:=
@@ -73,7 +73,7 @@ CFLAGS	+=	$(INCLUDE) -D__WIIU__ -D__WUT__ \
 			-DRIO_DEBUG \
 			-DRIO_CAFE_MAIN_FILE_DEVICE_AS_CONTENT
 
-CXXFLAGS	:= $(CFLAGS) -std=c++17
+CXXFLAGS	:= $(CFLAGS) -std=c++20
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-g $(ARCH) $(RPXSPECS) -Wl,-Map,$(notdir $*.map)
@@ -93,7 +93,7 @@ LIBDIRS	:= $(WUT_ROOT) $(PORTLIBS)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #-------------------------------------------------------------------------------
 
-export OUTPUT	:=	$(CURDIR)/fs/code/$(TARGET)
+export OUTPUT	:=	$(CURDIR)/bin/fs/code/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
@@ -166,7 +166,7 @@ all: $(BUILD)
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile_wiiu
 
 #-------------------------------------------------------------------------------
 clean:

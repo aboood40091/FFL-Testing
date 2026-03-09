@@ -50,3 +50,4 @@ Makefile
 
 # Build files
 build/
+build_wiiu/
