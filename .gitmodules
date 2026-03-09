@@ -18,3 +18,6 @@
 	path = lib/ffl-win
 	url = https://github.com/aboood40091/ffl.git
 	branch = nsmbu-win-port
+[submodule "lib/backward-cpp"]
+	path = lib/backward-cpp
+	url = https://github.com/bombela/backward-cpp.git
