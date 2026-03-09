@@ -28,8 +28,8 @@ uniform PS_PUSH_DATA PS_PUSH;
 uniform sampler2D s_texture;
 
 layout(location = 0) in vec4 PARAM_0;
-layout(location = 2) in vec4 PARAM_1;
-layout(location = 1) in vec4 PARAM_2;
+layout(location = 2) in vec4 PARAM_2;
+layout(location = 1) in vec4 PARAM_1;
 layout(location = 3) in vec4 PARAM_3;
 layout(location = 4) in vec4 PARAM_4;
 layout(location = 0) out vec4 PIXEL_0;
@@ -45,8 +45,8 @@ void main()
     stackIdxVar = 0;
     stateVar = 0;
     RVar[0u] = PARAM_0;
-    RVar[1u] = PARAM_1;
-    RVar[2u] = PARAM_2;
+    RVar[1u] = PARAM_2;
+    RVar[2u] = PARAM_1;
     RVar[3u] = PARAM_3;
     RVar[4u] = PARAM_4;
     stackVar[stackIdxVar] = stateVar;
