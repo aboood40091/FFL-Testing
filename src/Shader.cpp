@@ -343,8 +343,6 @@ void Shader::bind(bool light_enable) const
     GX2SetFetchShader(&mFetchShader);
 #elif RIO_IS_WIN
     RIO_GL_CALL(glBindVertexArray(mVAOHandle));
-    for (u32 i = 0; i < FFL_ATTRIBUTE_BUFFER_TYPE_MAX; i++)
-        RIO_GL_CALL(glDisableVertexAttribArray(i));
 #endif
 
     mShader.setUniform(cLightDir, u32(-1), mPixelUniformLocation[PIXEL_UNIFORM_LIGHT_DIR]);
@@ -532,6 +530,7 @@ void Shader::draw_(const FFLDrawParam& draw_param)
 
                 if (stride == 0)
                 {
+                    RIO_GL_CALL(glDisableVertexAttribArray(location));
                     RIO_GL_CALL(glVertexAttrib3fv(location, static_cast<f32*>(ptr)));
                 }
                 else
@@ -568,6 +567,7 @@ void Shader::draw_(const FFLDrawParam& draw_param)
 
                 if (stride == 0)
                 {
+                    RIO_GL_CALL(glDisableVertexAttribArray(location));
                     RIO_GL_CALL(glVertexAttrib2fv(location, static_cast<f32*>(ptr)));
                 }
                 else
@@ -604,6 +604,7 @@ void Shader::draw_(const FFLDrawParam& draw_param)
 
                 if (stride == 0)
                 {
+                    RIO_GL_CALL(glDisableVertexAttribArray(location));
                     RIO_GL_CALL(glVertexAttribP4ui(location, GL_INT_2_10_10_10_REV, true, *static_cast<u32*>(ptr)));
                 }
                 else
@@ -640,6 +641,7 @@ void Shader::draw_(const FFLDrawParam& draw_param)
 
                 if (stride == 0)
                 {
+                    RIO_GL_CALL(glDisableVertexAttribArray(location));
                     RIO_GL_CALL(glVertexAttrib4Nbv(location, static_cast<s8*>(ptr)));
                 }
                 else
@@ -676,6 +678,7 @@ void Shader::draw_(const FFLDrawParam& draw_param)
 
                 if (stride == 0)
                 {
+                    RIO_GL_CALL(glDisableVertexAttribArray(location));
                     RIO_GL_CALL(glVertexAttrib4Nubv(location, static_cast<u8*>(ptr)));
                 }
                 else
