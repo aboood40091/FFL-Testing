@@ -5,6 +5,7 @@
 *.slo
 *.lo
 *.o
+*.obj
 
 # Precompiled Headers
 *.gch
@@ -30,16 +31,22 @@
 *.out
 *.app
 
-# CodeBlocks Project files
+# IDE files
 *.depend
 *.layout
 *.cbp
+compile_commands.json
+.cache
+.vscode
+.vs
+*.sh
+*.sln
+*.vcxproj*
+.zed
 
-# Wii U Build files
-*.lst
-*.map
+# Generic build files
+Makefile
+*.make
 
-# Python Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# Build files
+build/
