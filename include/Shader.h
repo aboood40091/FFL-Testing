@@ -89,7 +89,7 @@ private:
 #if RIO_IS_CAFE
     GX2AttribStream         mAttribute[FFL_ATTRIBUTE_BUFFER_TYPE_MAX];
     GX2FetchShader          mFetchShader;
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     u32                     mVBOHandle[FFL_ATTRIBUTE_BUFFER_TYPE_MAX];
     u32                     mVAOHandle;
 #endif

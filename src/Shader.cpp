@@ -217,7 +217,7 @@ Shader::Shader()
 #if RIO_IS_CAFE
     : mAttribute()
     , mFetchShader()
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     : mVBOHandle()
     , mVAOHandle()
 #endif
@@ -236,7 +236,7 @@ Shader::~Shader()
         rio::MemUtil::free(mFetchShader.program);
         mFetchShader.program = nullptr;
     }
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     if (mVAOHandle != GL_NONE)
     {
         RIO_GL_CALL(glDeleteVertexArrays(1, &mVAOHandle));
@@ -320,7 +320,7 @@ void Shader::initialize()
     u32 size = GX2CalcFetchShaderSizeEx(FFL_ATTRIBUTE_BUFFER_TYPE_MAX, GX2_FETCH_SHADER_TESSELLATION_NONE, GX2_TESSELLATION_MODE_DISCRETE);
     void* buffer = rio::MemUtil::alloc(size, GX2_SHADER_ALIGNMENT);
     GX2InitFetchShaderEx(&mFetchShader, (u8*)buffer, FFL_ATTRIBUTE_BUFFER_TYPE_MAX, mAttribute, GX2_FETCH_SHADER_TESSELLATION_NONE, GX2_TESSELLATION_MODE_DISCRETE);
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     RIO_ASSERT(mVAOHandle == GL_NONE);
     RIO_GL_CALL(glCreateBuffers(FFL_ATTRIBUTE_BUFFER_TYPE_MAX, mVBOHandle));
     RIO_GL_CALL(glCreateVertexArrays(1, &mVAOHandle));
@@ -341,7 +341,7 @@ void Shader::bind(bool light_enable) const
     mShader.bind();
 #if RIO_IS_CAFE
     GX2SetFetchShader(&mFetchShader);
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     RIO_GL_CALL(glBindVertexArray(mVAOHandle));
 #endif
 
@@ -380,7 +380,7 @@ void Shader::applyAlphaTest(bool enable, rio::Graphics::CompareFunc func, f32 re
 {
 #if RIO_IS_CAFE
     GX2SetAlphaTest(enable, GX2CompareFunction(func), ref);
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
     mShader.setUniform(u32(func - GL_NEVER), u32(-1), mShader.getFragmentUniformLocation("PS_PUSH.alphaFunc"));
     mShader.setUniform(ref,                  u32(-1), mShader.getFragmentUniformLocation("PS_PUSH.alphaRef"));
 #endif
@@ -515,7 +515,7 @@ void Shader::draw_(const FFLDrawParam& draw_param)
             draw_param.attributeBufferParam.attributeBuffers[FFL_ATTRIBUTE_BUFFER_TYPE_COLOR].stride,
             draw_param.attributeBufferParam.attributeBuffers[FFL_ATTRIBUTE_BUFFER_TYPE_COLOR].ptr
         );
-#elif RIO_IS_WIN
+#elif RIO_IS_DESKTOP
         {
             FFLAttributeBufferType type = FFL_ATTRIBUTE_BUFFER_TYPE_POSITION;
 
