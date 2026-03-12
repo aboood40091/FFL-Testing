@@ -67,6 +67,7 @@ DRC_SPLASH	:=
 CFLAGS	:=	-Wall -Wmissing-include-dirs -Wundef -Wredundant-decls -Wcast-align \
 			-Og -g \
 			-ffunction-sections -fdata-sections \
+			-fno-strict-aliasing \
 			$(MACHDEP)
 
 CFLAGS	+=	$(INCLUDE) -D__WIIU__ -D__WUT__ \

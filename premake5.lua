@@ -95,8 +95,6 @@ workspace "FFL-Testing"
         defines {
             "RIO_RELEASE"
         }
-
-    filter { "configurations:Release*", "not toolset:gcc" }
         linktimeoptimization "On"
 
     filter "configurations:ReleaseDev"
@@ -243,6 +241,8 @@ project "Lib_FFL"
     defines {
         "FFL_MLC_PATH=\"" .. fflMlcPath .. "\""
     }
+
+    strictaliasing "Off"
 
 project "FFL-Testing"
     files {
